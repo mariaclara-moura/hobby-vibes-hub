@@ -63,7 +63,7 @@ export async function searchBooks(query: string): Promise<SearchResult[]> {
       };
     });
   } catch {
-    const fallback = await fetch(`${OPEN_LIBRARY_BASE}?q=${encodeURIComponent(query)}&limit=10&fields=key,title,author_name,first_publish_year,cover_i,subject,first_sentence`);
+    const fallback = await fetch(`${OPEN_LIBRARY_BASE}?title=${encodeURIComponent(query)}&limit=10&fields=key,title,author_name,first_publish_year,cover_i,subject,first_sentence`);
     if (!fallback.ok) throw new Error("Books search unavailable");
     const data = await fallback.json();
     return (data.docs || []).map((b: any): SearchResult => ({
