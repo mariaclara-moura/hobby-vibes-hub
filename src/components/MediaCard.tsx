@@ -2,10 +2,10 @@ import { MediaItem } from "@/types/media";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { StarRating } from "./StarRating";
-import { Film, Tv, BookOpen } from "lucide-react";
+import { Film, Tv, BookOpen, Music, ListMusic } from "lucide-react";
 
-const typeIcon = { movie: Film, tv: Tv, book: BookOpen };
-const typeLabel = { movie: "Movie", tv: "TV Show", book: "Book" };
+const typeIcon = { movie: Film, tv: Tv, book: BookOpen, track: Music, playlist: ListMusic };
+const typeLabel = { movie: "Movie", tv: "TV Show", book: "Book", track: "Song", playlist: "Playlist" };
 
 export function MediaCard({ item, index = 0 }: { item: MediaItem; index?: number }) {
   const Icon = typeIcon[item.type];

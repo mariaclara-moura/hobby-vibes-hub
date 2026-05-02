@@ -39,7 +39,7 @@ export function Hero() {
           transition={{ duration: 0.7, delay: 0.2 }}
           className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          Save the books, movies and TV shows that move you. Get emotionally
+          Save the books, movies, TV shows and music that move you. Get emotionally
           intelligent recommendations that bridge every medium.
         </motion.p>
 

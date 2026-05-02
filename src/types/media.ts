@@ -1,4 +1,4 @@
-export type MediaType = "movie" | "tv" | "book";
+export type MediaType = "movie" | "tv" | "book" | "track" | "playlist";
 
 export interface MediaItem {
   id: string; // unique storage id
@@ -14,6 +14,8 @@ export interface MediaItem {
   review: string;
   createdAt: number;
   recommendations?: AIRecommendation[];
+  externalUrl?: string;
+  previewUrl?: string;
 }
 
 export interface AIRecommendation {
@@ -27,6 +29,8 @@ export interface AIRecommendation {
     imageUrl: string;
     description: string;
     year?: string;
+    externalUrl?: string;
+    previewUrl?: string;
   } | null;
 }
 
@@ -39,4 +43,6 @@ export interface SearchResult {
   categories: string[];
   year?: string;
   authors?: string[];
+  externalUrl?: string;
+  previewUrl?: string;
 }

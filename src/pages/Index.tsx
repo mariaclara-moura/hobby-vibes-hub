@@ -65,7 +65,7 @@ const Index = () => {
             </div>
             <h3 className="font-serif text-2xl font-semibold mb-2">Your hub awaits</h3>
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              Add a book, movie, or TV show that moved you and let AI weave connections across mediums.
+              Add a book, movie, TV show, song or playlist that moved you and let AI weave connections across mediums.
             </p>
             <Button asChild className="gradient-hero text-white border-0 rounded-full">
               <Link to="/add">Add your first hobby</Link>
@@ -94,7 +94,7 @@ const Index = () => {
             <h2 className="font-serif text-3xl md:text-4xl font-bold mb-1">
               Because you loved <span className="italic text-gradient">{latestWithRecs.title}</span>
             </h2>
-            <p className="text-muted-foreground mb-8">Curated across books, film and TV — by feeling, not just genre.</p>
+            <p className="text-muted-foreground mb-8">Curated across books, film, TV and music — by feeling, not just genre.</p>
 
             <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide -mx-6 px-6">
               {latestWithRecs.recommendations!.map((rec, i) => (
