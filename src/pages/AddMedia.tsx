@@ -46,7 +46,7 @@ export default function AddMedia() {
         const r = await search(type, query);
         setResults(r);
       } catch (e) {
-        toast.error("Search failed. Check your API key.");
+        toast.error(type === "book" ? "Book search is temporarily unavailable." : "Search failed. Check your API key.");
       } finally {
         setSearching(false);
       }

@@ -4,6 +4,7 @@ import { getTmdbKey } from "./storage";
 const TMDB_BASE = "https://api.themoviedb.org/3";
 const TMDB_IMG = "https://image.tmdb.org/t/p/w500";
 const BOOKS_BASE = "https://www.googleapis.com/books/v1/volumes";
+const OPEN_LIBRARY_BASE = "https://openlibrary.org/search.json";
 const GOOGLE_BOOKS_KEY = "AIzaSyC-FmZ7FZoh0CkzsoEW1rP4hPUtWIluMIc";
 
 const PLACEHOLDER = "https://via.placeholder.com/500x750/f5d5e0/8b3a5c?text=No+Image";
@@ -44,22 +45,38 @@ export async function searchTv(query: string): Promise<SearchResult[]> {
 
 export async function searchBooks(query: string): Promise<SearchResult[]> {
   if (!query.trim()) return [];
-  const res = await fetch(`${BOOKS_BASE}?q=${encodeURIComponent(query)}&maxResults=10&printType=books&key=${GOOGLE_BOOKS_KEY}`);
-  if (!res.ok) throw new Error("Books error");
-  const data = await res.json();
-  return (data.items || []).map((b: any): SearchResult => {
-    const v = b.volumeInfo || {};
-    return {
-      externalId: b.id,
+  try {
+    const res = await fetch(`${BOOKS_BASE}?q=${encodeURIComponent(query)}&maxResults=10&printType=books&key=${GOOGLE_BOOKS_KEY}`);
+    if (!res.ok) throw new Error("Google Books unavailable");
+    const data = await res.json();
+    return (data.items || []).map((b: any): SearchResult => {
+      const v = b.volumeInfo || {};
+      return {
+        externalId: b.id,
+        type: "book",
+        title: v.title || "Untitled",
+        description: v.description || "",
+        imageUrl: v.imageLinks?.thumbnail?.replace("http://", "https://") || PLACEHOLDER,
+        categories: v.categories || [],
+        year: v.publishedDate?.slice(0, 4),
+        authors: v.authors || [],
+      };
+    });
+  } catch {
+    const fallback = await fetch(`${OPEN_LIBRARY_BASE}?title=${encodeURIComponent(query)}&limit=10&fields=key,title,author_name,first_publish_year,cover_i,subject,first_sentence`);
+    if (!fallback.ok) throw new Error("Books search unavailable");
+    const data = await fallback.json();
+    return (data.docs || []).map((b: any): SearchResult => ({
+      externalId: b.key || `${b.title}-${b.first_publish_year || "unknown"}`,
       type: "book",
-      title: v.title || "Untitled",
-      description: v.description || "",
-      imageUrl: v.imageLinks?.thumbnail?.replace("http://", "https://") || PLACEHOLDER,
-      categories: v.categories || [],
-      year: v.publishedDate?.slice(0, 4),
-      authors: v.authors || [],
-    };
-  });
+      title: b.title || "Untitled",
+      description: Array.isArray(b.first_sentence) ? b.first_sentence[0] || "" : b.first_sentence || "",
+      imageUrl: b.cover_i ? `https://covers.openlibrary.org/b/id/${b.cover_i}-L.jpg` : PLACEHOLDER,
+      categories: (b.subject || []).slice(0, 3),
+      year: b.first_publish_year ? String(b.first_publish_year) : undefined,
+      authors: b.author_name || [],
+    }));
+  }
 }
 
 export async function search(type: MediaType, query: string): Promise<SearchResult[]> {
