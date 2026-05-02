@@ -14,6 +14,8 @@ export interface MediaItem {
   review: string;
   createdAt: number;
   recommendations?: AIRecommendation[];
+  externalUrl?: string;
+  previewUrl?: string;
 }
 
 export interface AIRecommendation {
@@ -27,6 +29,8 @@ export interface AIRecommendation {
     imageUrl: string;
     description: string;
     year?: string;
+    externalUrl?: string;
+    previewUrl?: string;
   } | null;
 }
 
