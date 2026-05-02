@@ -9,11 +9,11 @@ import { RecommendationCard } from "@/components/RecommendationCard";
 import { PosterSkeleton } from "@/components/PosterSkeleton";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ArrowLeft, Trash2, Sparkles, Loader2, RefreshCw, Film, Tv, BookOpen } from "lucide-react";
+import { ArrowLeft, Trash2, Sparkles, Loader2, RefreshCw, Film, Tv, BookOpen, Music, ListMusic, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 
-const typeIcon = { movie: Film, tv: Tv, book: BookOpen };
-const typeLabel = { movie: "Movie", tv: "TV Show", book: "Book" };
+const typeIcon = { movie: Film, tv: Tv, book: BookOpen, track: Music, playlist: ListMusic };
+const typeLabel = { movie: "Movie", tv: "TV Show", book: "Book", track: "Song", playlist: "Playlist" };
 
 export default function MediaDetails() {
   const { id } = useParams<{ id: string }>();
@@ -129,7 +129,17 @@ export default function MediaDetails() {
                 )}
               </div>
 
-              <div className="flex gap-2 mt-6">
+              <div className="flex flex-wrap gap-2 mt-6 items-center">
+                {item.externalUrl && (
+                  <Button asChild size="sm" className="rounded-full gradient-hero text-white border-0">
+                    <a href={item.externalUrl} target="_blank" rel="noreferrer">
+                      <ExternalLink className="w-4 h-4 mr-1" /> Open on Spotify
+                    </a>
+                  </Button>
+                )}
+                {item.previewUrl && (
+                  <audio controls src={item.previewUrl} className="h-9 max-w-[260px]" />
+                )}
                 <Button onClick={handleDelete} variant="outline" size="sm" className="rounded-full text-destructive border-destructive/30 hover:bg-destructive/10">
                   <Trash2 className="w-4 h-4 mr-1" /> Remove
                 </Button>
