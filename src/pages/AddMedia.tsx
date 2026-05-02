@@ -5,7 +5,7 @@ import { Film, Tv, BookOpen, Search, Loader2, Sparkles, Music, ListMusic } from 
 import { motion, AnimatePresence } from "framer-motion";
 import { MediaType, SearchResult, MediaItem } from "@/types/media";
 import { search, fetchTmdbDetails } from "@/lib/api";
-import { saveItem, updateItem, getTmdbKey } from "@/lib/storage";
+import { saveItem, updateItem } from "@/lib/storage";
 import { getAIRecommendations } from "@/lib/recommendations";
 import { StarRating } from "@/components/StarRating";
 import { Button } from "@/components/ui/button";
@@ -40,8 +40,6 @@ export default function AddMedia() {
       setResults([]);
       return;
     }
-    if ((type === "movie" || type === "tv") && !getTmdbKey()) return;
-
     const t = setTimeout(async () => {
       setSearching(true);
       try {
@@ -53,7 +51,7 @@ export default function AddMedia() {
             ? "Book search is temporarily unavailable."
             : type === "track" || type === "playlist"
             ? "Spotify search failed. Please try again."
-            : "Search failed. Check your API key.";
+            : "Movie/TV search failed. Please try again.";
         toast.error(msg);
       } finally {
         setSearching(false);
