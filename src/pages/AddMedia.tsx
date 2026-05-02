@@ -230,8 +230,7 @@ export default function AddMedia() {
                 </motion.div>
               )}
             </AnimatePresence>
-          </>
-        )}
+        </>
       </div>
     </div>
   );
