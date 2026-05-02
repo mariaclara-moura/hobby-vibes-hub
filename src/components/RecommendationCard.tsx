@@ -43,7 +43,7 @@ export function RecommendationCard({ rec, index = 0 }: { rec: AIRecommendation; 
             <h4 className="font-serif font-semibold leading-tight line-clamp-2 mb-1">
               {rec.resolved.title}
             </h4>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-2">
               {rec.resolved.year && <span className="text-[11px] opacity-70">{rec.resolved.year}</span>}
               {isSpotify && externalUrl && (
                 <span className="text-[10px] opacity-80 flex items-center gap-1 ml-auto">
@@ -54,7 +54,16 @@ export function RecommendationCard({ rec, index = 0 }: { rec: AIRecommendation; 
           </div>
         </div>
       </Wrapper>
-      <p className="mt-3 text-xs text-muted-foreground italic leading-relaxed line-clamp-3 px-1">
+      {rec.resolved.categories && rec.resolved.categories.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1 px-1">
+          {rec.resolved.categories.slice(0, 2).map((c) => (
+            <span key={c} className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground font-medium">
+              {c}
+            </span>
+          ))}
+        </div>
+      )}
+      <p className="mt-2 text-xs text-muted-foreground italic leading-relaxed line-clamp-3 px-1">
         "{rec.reason}"
       </p>
     </motion.div>
