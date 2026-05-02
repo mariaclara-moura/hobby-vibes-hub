@@ -1,8 +1,6 @@
 import { SearchResult, MediaType } from "@/types/media";
-import { getTmdbKey } from "./storage";
 import { supabase } from "@/integrations/supabase/client";
 
-const TMDB_BASE = "https://api.themoviedb.org/3";
 const TMDB_IMG = "https://image.tmdb.org/t/p/w500";
 const BOOKS_BASE = "https://www.googleapis.com/books/v1/volumes";
 const OPEN_LIBRARY_BASE = "https://openlibrary.org/search.json";
@@ -10,12 +8,16 @@ const GOOGLE_BOOKS_KEY = "AIzaSyC-FmZ7FZoh0CkzsoEW1rP4hPUtWIluMIc";
 
 const PLACEHOLDER = "https://via.placeholder.com/500x750/f5d5e0/8b3a5c?text=No+Image";
 
+async function callTmdb(payload: any) {
+  const { data, error } = await supabase.functions.invoke("tmdb", { body: payload });
+  if (error) throw error;
+  if ((data as any)?.error) throw new Error((data as any).error);
+  return data;
+}
+
 export async function searchMovies(query: string): Promise<SearchResult[]> {
-  const key = getTmdbKey();
-  if (!key || !query.trim()) return [];
-  const res = await fetch(`${TMDB_BASE}/search/movie?api_key=${key}&query=${encodeURIComponent(query)}&include_adult=false`);
-  if (!res.ok) throw new Error("TMDB error");
-  const data = await res.json();
+  if (!query.trim()) return [];
+  const data = await callTmdb({ action: "search", kind: "movie", query });
   return (data.results || []).slice(0, 10).map((m: any): SearchResult => ({
     externalId: String(m.id),
     type: "movie",
@@ -28,11 +30,8 @@ export async function searchMovies(query: string): Promise<SearchResult[]> {
 }
 
 export async function searchTv(query: string): Promise<SearchResult[]> {
-  const key = getTmdbKey();
-  if (!key || !query.trim()) return [];
-  const res = await fetch(`${TMDB_BASE}/search/tv?api_key=${key}&query=${encodeURIComponent(query)}&include_adult=false`);
-  if (!res.ok) throw new Error("TMDB error");
-  const data = await res.json();
+  if (!query.trim()) return [];
+  const data = await callTmdb({ action: "search", kind: "tv", query });
   return (data.results || []).slice(0, 10).map((m: any): SearchResult => ({
     externalId: String(m.id),
     type: "tv",
@@ -97,12 +96,20 @@ export async function search(type: MediaType, query: string): Promise<SearchResu
   return searchBooks(query);
 }
 
-// Resolve a recommended title to a real media item
+// Resolve a recommended title to a real media item (with categories enriched)
 export async function resolveRecommendation(type: MediaType, title: string) {
   try {
     const results = await search(type, title);
     if (results.length === 0) return null;
     const first = results[0];
+
+    // Enrich movies/tv with TMDB genres
+    let categories = first.categories;
+    if ((type === "movie" || type === "tv") && (!categories || categories.length === 0)) {
+      const details = await fetchTmdbDetails(type, first.externalId);
+      if (details?.categories) categories = details.categories;
+    }
+
     return {
       externalId: first.externalId,
       title: first.title,
@@ -111,6 +118,7 @@ export async function resolveRecommendation(type: MediaType, title: string) {
       year: first.year,
       externalUrl: first.externalUrl,
       previewUrl: first.previewUrl,
+      categories: categories || [],
     };
   } catch {
     return null;
@@ -119,12 +127,8 @@ export async function resolveRecommendation(type: MediaType, title: string) {
 
 // Fetch movie/tv genres for richer context
 export async function fetchTmdbDetails(type: "movie" | "tv", id: string) {
-  const key = getTmdbKey();
-  if (!key) return null;
   try {
-    const res = await fetch(`${TMDB_BASE}/${type}/${id}?api_key=${key}`);
-    if (!res.ok) return null;
-    const data = await res.json();
+    const data = await callTmdb({ action: "details", kind: type, id });
     return {
       categories: (data.genres || []).map((g: any) => g.name),
     };

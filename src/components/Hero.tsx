@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Sparkles, Film, BookOpen, Tv } from "lucide-react";
+import { Sparkles, Film, BookOpen, Tv, Music, ListMusic } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -68,6 +68,8 @@ export function Hero() {
             { icon: BookOpen, label: "Books" },
             { icon: Film, label: "Movies" },
             { icon: Tv, label: "TV Shows" },
+            { icon: Music, label: "Songs" },
+            { icon: ListMusic, label: "Playlists" },
           ].map((c, i) => (
             <motion.div
               key={c.label}

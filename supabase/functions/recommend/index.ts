@@ -6,13 +6,21 @@ const corsHeaders = {
 
 interface Body {
   title: string;
-  type: "movie" | "tv" | "book";
+  type: "movie" | "tv" | "book" | "track" | "playlist";
   description?: string;
   categories?: string[];
   authors?: string[];
   rating?: number;
   review?: string;
 }
+
+const TYPE_LABEL: Record<string, string> = {
+  movie: "movie",
+  tv: "TV show",
+  book: "book",
+  track: "song",
+  playlist: "playlist",
+};
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -22,20 +30,28 @@ Deno.serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    const typeLabel = body.type === "movie" ? "movie" : body.type === "tv" ? "TV show" : "book";
+    const typeLabel = TYPE_LABEL[body.type] || body.type;
 
-    const systemPrompt = `You are a refined cultural curator for HobbyHub — a media discovery platform. You connect books, movies and TV shows by ATMOSPHERE, THEMES, EMOTIONS, STORYTELLING and AESTHETICS — not just genre. Your suggestions feel emotionally intelligent and surprising.
+    const systemPrompt = `You are a refined cultural curator for HobbyHub — a media discovery platform. You connect books, movies, TV shows, and Spotify playlists by ATMOSPHERE, THEMES, EMOTIONS, STORYTELLING and AESTHETICS — not just genre. Your suggestions feel emotionally intelligent and surprising.
 
-Always return 2 books, 2 movies, and 2 TV shows. Use real, well-known titles only (avoid obscure ones the APIs cannot find). Keep reasons concise (one short sentence, evocative).`;
+Always return EXACTLY 12 recommendations with this distribution:
+- 4 books (type: "book")
+- 4 movies or TV shows (type: "movie" or "tv", any mix)
+- 4 Spotify playlists (type: "playlist")
+
+Rules:
+- Use real, well-known titles only (avoid obscure ones the APIs cannot find).
+- For playlists, suggest mood/theme-based playlist names that exist on Spotify (e.g. "Lo-Fi Beats", "Rainy Jazz", "Coffeehouse", "Indie Folk", "Cinematic Soundtracks", "Dark Academia", "Cottagecore", "Melancholy Indie", "Soft Pop").
+- Keep reasons concise (one short, evocative sentence).`;
 
     const userPrompt = `The user just saved a ${typeLabel} they enjoyed:
 
 Title: ${body.title}
-${body.authors?.length ? `Authors: ${body.authors.join(", ")}\n` : ""}${body.categories?.length ? `Categories: ${body.categories.join(", ")}\n` : ""}Description: ${body.description?.slice(0, 600) || "(none)"}
+${body.authors?.length ? `Artists/Authors: ${body.authors.join(", ")}\n` : ""}${body.categories?.length ? `Categories: ${body.categories.join(", ")}\n` : ""}Description: ${body.description?.slice(0, 600) || "(none)"}
 User rating: ${body.rating ?? "?"}/5
 User review: "${body.review?.slice(0, 500) || "(none)"}"
 
-Suggest 6 cross-media recommendations (2 books, 2 movies, 2 TV shows) capturing similar atmosphere, emotion and storytelling.`;
+Suggest 12 cross-media recommendations (4 books, 4 movies/TV shows, 4 Spotify playlists) capturing similar atmosphere, emotion and storytelling.`;
 
     const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -63,8 +79,8 @@ Suggest 6 cross-media recommendations (2 books, 2 movies, 2 TV shows) capturing 
                     items: {
                       type: "object",
                       properties: {
-                        title: { type: "string", description: "Exact, real title. For songs, format as 'Song Name - Artist'." },
-                        type: { type: "string", enum: ["movie", "tv", "book", "track"] },
+                        title: { type: "string", description: "Exact, real title. For playlists, a recognizable mood-based Spotify playlist name." },
+                        type: { type: "string", enum: ["movie", "tv", "book", "playlist"] },
                         reason: { type: "string", description: "One short evocative sentence" },
                       },
                       required: ["title", "type", "reason"],

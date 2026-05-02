@@ -31,6 +31,7 @@ export interface AIRecommendation {
     year?: string;
     externalUrl?: string;
     previewUrl?: string;
+    categories?: string[];
   } | null;
 }
 

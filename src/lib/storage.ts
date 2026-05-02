@@ -1,7 +1,6 @@
 import { MediaItem } from "@/types/media";
 
 const KEY = "hobbyhub:items";
-const TMDB_KEY = "hobbyhub:tmdb_key";
 
 export function getItems(): MediaItem[] {
   try {
@@ -33,9 +32,3 @@ export function getItem(id: string): MediaItem | undefined {
   return getItems().find((i) => i.id === id);
 }
 
-export function getTmdbKey(): string {
-  return localStorage.getItem(TMDB_KEY) || "";
-}
-export function setTmdbKey(key: string) {
-  localStorage.setItem(TMDB_KEY, key);
-}

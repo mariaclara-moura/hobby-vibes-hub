@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Sparkles, Plus, Home, Settings } from "lucide-react";
+import { Sparkles, Plus, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -8,7 +8,6 @@ export function Navbar() {
   const links = [
     { to: "/", label: "Home", icon: Home },
     { to: "/add", label: "Add", icon: Plus },
-    { to: "/settings", label: "Settings", icon: Settings },
   ];
 
   return (
