@@ -7,7 +7,7 @@ import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import AddMedia from "./pages/AddMedia.tsx";
 import MediaDetails from "./pages/MediaDetails.tsx";
-import Settings from "./pages/Settings.tsx";
+
 
 const queryClient = new QueryClient();
 
@@ -21,7 +21,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/add" element={<AddMedia />} />
           <Route path="/item/:id" element={<MediaDetails />} />
-          <Route path="/settings" element={<Settings />} />
+          
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
