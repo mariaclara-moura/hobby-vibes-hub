@@ -160,7 +160,7 @@ export default function MediaDetails() {
               <span className="text-sm uppercase tracking-[0.2em] text-primary font-semibold">AI Curated</span>
             </div>
             <h2 className="font-serif text-3xl md:text-4xl font-bold">If this resonated, you might love…</h2>
-            <p className="text-muted-foreground mt-1 max-w-xl">Cross-medium picks chosen by atmosphere, emotion and storytelling.</p>
+            <p className="text-muted-foreground mt-1 max-w-xl">12 cross-medium picks — books, screen, and Spotify playlists — chosen by atmosphere, emotion and storytelling.</p>
           </div>
           <Button
             onClick={() => generateRecs(item)}
@@ -175,11 +175,11 @@ export default function MediaDetails() {
         </div>
 
         {loadingRecs ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
-            {Array.from({ length: 6 }).map((_, i) => <PosterSkeleton key={i} />)}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
+            {Array.from({ length: 12 }).map((_, i) => <PosterSkeleton key={i} />)}
           </div>
         ) : item.recommendations && item.recommendations.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
             {item.recommendations.map((r, i) => <RecommendationCard key={i} rec={r} index={i} />)}
           </div>
         ) : (
