@@ -63,8 +63,8 @@ Suggest 6 cross-media recommendations (2 books, 2 movies, 2 TV shows) capturing 
                     items: {
                       type: "object",
                       properties: {
-                        title: { type: "string", description: "Exact, real title that can be found in TMDB or Google Books" },
-                        type: { type: "string", enum: ["movie", "tv", "book"] },
+                        title: { type: "string", description: "Exact, real title. For songs, format as 'Song Name - Artist'." },
+                        type: { type: "string", enum: ["movie", "tv", "book", "track"] },
                         reason: { type: "string", description: "One short evocative sentence" },
                       },
                       required: ["title", "type", "reason"],
