@@ -107,8 +107,6 @@ export default function AddMedia() {
     }
   };
 
-  const tmdbMissing = (type === "movie" || type === "tv") && !getTmdbKey();
-
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -119,7 +117,7 @@ export default function AddMedia() {
         </motion.div>
 
         {/* Type tabs */}
-        <div className="flex gap-2 mb-6 p-1 glass rounded-full w-fit">
+        <div className="flex gap-2 mb-6 p-1 glass rounded-full w-fit flex-wrap">
           {TYPES.map(({ type: t, label, icon: Icon }) => (
             <button
               key={t}
@@ -135,16 +133,8 @@ export default function AddMedia() {
           ))}
         </div>
 
-        {tmdbMissing ? (
-          <div className="glass rounded-2xl border border-primary/30 p-6 text-center">
-            <Sparkles className="w-8 h-8 text-primary mx-auto mb-2" />
-            <p className="font-semibold mb-1">TMDB API key needed for movies & TV</p>
-            <p className="text-sm text-muted-foreground mb-4">It's free — get one at themoviedb.org and paste it in Settings.</p>
-            <Button onClick={() => navigate("/settings")} className="rounded-full">Open settings</Button>
-          </div>
-        ) : (
-          <>
-            {/* Search */}
+        <>
+          {/* Search */}
             {!selected && (
               <div className="relative mb-6">
                 <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
