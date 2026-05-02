@@ -1,5 +1,6 @@
 import { SearchResult, MediaType } from "@/types/media";
 import { getTmdbKey } from "./storage";
+import { supabase } from "@/integrations/supabase/client";
 
 const TMDB_BASE = "https://api.themoviedb.org/3";
 const TMDB_IMG = "https://image.tmdb.org/t/p/w500";
@@ -79,9 +80,20 @@ export async function searchBooks(query: string): Promise<SearchResult[]> {
   }
 }
 
+export async function searchSpotify(kind: "track" | "playlist", query: string): Promise<SearchResult[]> {
+  if (!query.trim()) return [];
+  const { data, error } = await supabase.functions.invoke("spotify", {
+    body: { action: "search", kind, query },
+  });
+  if (error) throw error;
+  if ((data as any)?.error) throw new Error((data as any).error);
+  return (data?.results || []) as SearchResult[];
+}
+
 export async function search(type: MediaType, query: string): Promise<SearchResult[]> {
   if (type === "movie") return searchMovies(query);
   if (type === "tv") return searchTv(query);
+  if (type === "track" || type === "playlist") return searchSpotify(type, query);
   return searchBooks(query);
 }
 
@@ -97,6 +109,8 @@ export async function resolveRecommendation(type: MediaType, title: string) {
       imageUrl: first.imageUrl,
       description: first.description,
       year: first.year,
+      externalUrl: first.externalUrl,
+      previewUrl: first.previewUrl,
     };
   } catch {
     return null;
