@@ -1,0 +1,102 @@
+import { SearchResult, MediaType } from "@/types/media";
+import { getTmdbKey } from "./storage";
+
+const TMDB_BASE = "https://api.themoviedb.org/3";
+const TMDB_IMG = "https://image.tmdb.org/t/p/w500";
+const BOOKS_BASE = "https://www.googleapis.com/books/v1/volumes";
+
+const PLACEHOLDER = "https://via.placeholder.com/500x750/f5d5e0/8b3a5c?text=No+Image";
+
+export async function searchMovies(query: string): Promise<SearchResult[]> {
+  const key = getTmdbKey();
+  if (!key || !query.trim()) return [];
+  const res = await fetch(`${TMDB_BASE}/search/movie?api_key=${key}&query=${encodeURIComponent(query)}&include_adult=false`);
+  if (!res.ok) throw new Error("TMDB error");
+  const data = await res.json();
+  return (data.results || []).slice(0, 10).map((m: any): SearchResult => ({
+    externalId: String(m.id),
+    type: "movie",
+    title: m.title,
+    description: m.overview || "",
+    imageUrl: m.poster_path ? `${TMDB_IMG}${m.poster_path}` : PLACEHOLDER,
+    categories: [],
+    year: m.release_date?.slice(0, 4),
+  }));
+}
+
+export async function searchTv(query: string): Promise<SearchResult[]> {
+  const key = getTmdbKey();
+  if (!key || !query.trim()) return [];
+  const res = await fetch(`${TMDB_BASE}/search/tv?api_key=${key}&query=${encodeURIComponent(query)}&include_adult=false`);
+  if (!res.ok) throw new Error("TMDB error");
+  const data = await res.json();
+  return (data.results || []).slice(0, 10).map((m: any): SearchResult => ({
+    externalId: String(m.id),
+    type: "tv",
+    title: m.name,
+    description: m.overview || "",
+    imageUrl: m.poster_path ? `${TMDB_IMG}${m.poster_path}` : PLACEHOLDER,
+    categories: [],
+    year: m.first_air_date?.slice(0, 4),
+  }));
+}
+
+export async function searchBooks(query: string): Promise<SearchResult[]> {
+  if (!query.trim()) return [];
+  const res = await fetch(`${BOOKS_BASE}?q=${encodeURIComponent(query)}&maxResults=10&printType=books`);
+  if (!res.ok) throw new Error("Books error");
+  const data = await res.json();
+  return (data.items || []).map((b: any): SearchResult => {
+    const v = b.volumeInfo || {};
+    return {
+      externalId: b.id,
+      type: "book",
+      title: v.title || "Untitled",
+      description: v.description || "",
+      imageUrl: v.imageLinks?.thumbnail?.replace("http://", "https://") || PLACEHOLDER,
+      categories: v.categories || [],
+      year: v.publishedDate?.slice(0, 4),
+      authors: v.authors || [],
+    };
+  });
+}
+
+export async function search(type: MediaType, query: string): Promise<SearchResult[]> {
+  if (type === "movie") return searchMovies(query);
+  if (type === "tv") return searchTv(query);
+  return searchBooks(query);
+}
+
+// Resolve a recommended title to a real media item
+export async function resolveRecommendation(type: MediaType, title: string) {
+  try {
+    const results = await search(type, title);
+    if (results.length === 0) return null;
+    const first = results[0];
+    return {
+      externalId: first.externalId,
+      title: first.title,
+      imageUrl: first.imageUrl,
+      description: first.description,
+      year: first.year,
+    };
+  } catch {
+    return null;
+  }
+}
+
+// Fetch movie/tv genres for richer context
+export async function fetchTmdbDetails(type: "movie" | "tv", id: string) {
+  const key = getTmdbKey();
+  if (!key) return null;
+  try {
+    const res = await fetch(`${TMDB_BASE}/${type}/${id}?api_key=${key}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return {
+      categories: (data.genres || []).map((g: any) => g.name),
+    };
+  } catch {
+    return null;
+  }
+}
