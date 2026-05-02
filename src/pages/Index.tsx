@@ -3,20 +3,18 @@ import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { MediaCard } from "@/components/MediaCard";
 import { RecommendationCard } from "@/components/RecommendationCard";
-import { getItems, getTmdbKey } from "@/lib/storage";
+import { getItems } from "@/lib/storage";
 import { MediaItem } from "@/types/media";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Sparkles, Plus, Settings } from "lucide-react";
+import { Sparkles, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const [items, setItems] = useState<MediaItem[]>([]);
-  const [hasKey, setHasKey] = useState(true);
 
   useEffect(() => {
     setItems(getItems());
-    setHasKey(!!getTmdbKey());
   }, []);
 
   // Latest item with recs
@@ -25,20 +23,6 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Navbar />
-
-      {!hasKey && (
-        <div className="container pt-6">
-          <div className="glass rounded-2xl border border-primary/30 px-5 py-4 flex items-center gap-3 flex-wrap">
-            <Sparkles className="w-5 h-5 text-primary" />
-            <p className="text-sm flex-1">
-              <span className="font-semibold">Almost ready.</span> Add a free TMDB API key to unlock movies & TV.
-            </p>
-            <Button asChild size="sm" variant="outline" className="rounded-full">
-              <Link to="/settings"><Settings className="w-4 h-4 mr-1" /> Open settings</Link>
-            </Button>
-          </div>
-        </div>
-      )}
 
       <Hero />
 
