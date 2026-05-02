@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { useNavigate } from "react-router-dom";
-import { Film, Tv, BookOpen, Search, Loader2, Sparkles } from "lucide-react";
+import { Film, Tv, BookOpen, Search, Loader2, Sparkles, Music, ListMusic } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MediaType, SearchResult, MediaItem } from "@/types/media";
 import { search, fetchTmdbDetails } from "@/lib/api";
@@ -18,6 +18,8 @@ const TYPES: { type: MediaType; label: string; icon: typeof Film }[] = [
   { type: "movie", label: "Movies", icon: Film },
   { type: "tv", label: "TV Shows", icon: Tv },
   { type: "book", label: "Books", icon: BookOpen },
+  { type: "track", label: "Songs", icon: Music },
+  { type: "playlist", label: "Playlists", icon: ListMusic },
 ];
 
 export default function AddMedia() {
@@ -46,7 +48,13 @@ export default function AddMedia() {
         const r = await search(type, query);
         setResults(r);
       } catch (e) {
-        toast.error(type === "book" ? "Book search is temporarily unavailable." : "Search failed. Check your API key.");
+        const msg =
+          type === "book"
+            ? "Book search is temporarily unavailable."
+            : type === "track" || type === "playlist"
+            ? "Spotify search failed. Please try again."
+            : "Search failed. Check your API key.";
+        toast.error(msg);
       } finally {
         setSearching(false);
       }
@@ -63,7 +71,7 @@ export default function AddMedia() {
 
     // enrich movie/tv with genres
     let categories = selected.categories;
-    if (selected.type !== "book") {
+    if (selected.type === "movie" || selected.type === "tv") {
       const details = await fetchTmdbDetails(selected.type, selected.externalId);
       if (details?.categories) categories = details.categories;
     }
@@ -81,6 +89,8 @@ export default function AddMedia() {
       rating,
       review,
       createdAt: Date.now(),
+      externalUrl: selected.externalUrl,
+      previewUrl: selected.previewUrl,
     };
 
     saveItem(item);
@@ -144,7 +154,13 @@ export default function AddMedia() {
                   autoFocus
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder={`Search for ${type === "tv" ? "a TV show" : type === "movie" ? "a movie" : "a book"}…`}
+                  placeholder={`Search for ${
+                    type === "tv" ? "a TV show"
+                      : type === "movie" ? "a movie"
+                      : type === "book" ? "a book"
+                      : type === "track" ? "a song"
+                      : "a playlist"
+                  }…`}
                   className="pl-14 h-14 rounded-full text-base bg-card shadow-soft border-border"
                 />
                 {searching && <Loader2 className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 animate-spin text-primary" />}
