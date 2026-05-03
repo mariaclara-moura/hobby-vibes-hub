@@ -62,6 +62,7 @@ export async function searchBooks(query: string): Promise<SearchResult[]> {
         categories: v.categories || [],
         year: v.publishedDate?.slice(0, 4),
         authors: v.authors || [],
+        externalUrl: v.infoLink || v.previewLink || `https://books.google.com/books?id=${b.id}`,
       };
     });
   } catch {
