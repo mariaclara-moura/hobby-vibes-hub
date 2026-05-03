@@ -80,7 +80,7 @@ const Index = () => {
             </h2>
             <p className="text-muted-foreground mb-8">Curated across books, film, TV and music — by feeling, not just genre.</p>
 
-            <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide -mx-6 px-6">
+            <div className="flex flex-col sm:flex-row gap-5 sm:overflow-x-auto pb-4 scrollbar-hide sm:-mx-6 sm:px-6">
               {latestWithRecs.recommendations!.map((rec, i) => (
                 <RecommendationCard key={i} rec={rec} index={i} />
               ))}
