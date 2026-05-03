@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Sparkles, Plus, Home } from "lucide-react";
+import { Sparkles, Plus, Home, Library } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -7,6 +7,7 @@ export function Navbar() {
   const { pathname } = useLocation();
   const links = [
     { to: "/", label: "Home", icon: Home },
+    { to: "/collection", label: "Collection", icon: Library },
     { to: "/add", label: "Add", icon: Plus },
   ];
 
