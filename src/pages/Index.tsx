@@ -56,28 +56,10 @@ const Index = () => {
             </Button>
           </motion.div>
         ) : (
-          <div className="space-y-12">
-            {CATEGORIES.map((cat) => {
-              const catItems = items.filter((i) => i.type === cat.type);
-              if (catItems.length === 0) return null;
-              const Icon = cat.icon;
-              return (
-                <div key={cat.type}>
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Icon className="w-4 h-4 text-primary" />
-                    </div>
-                    <h3 className="font-serif text-xl font-semibold">{cat.label}</h3>
-                    <span className="text-sm text-muted-foreground">({catItems.length})</span>
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-                    {catItems.map((item, i) => (
-                      <MediaCard key={item.id} item={item} index={i} />
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+            {items.map((item, i) => (
+              <MediaCard key={item.id} item={item} index={i} />
+            ))}
           </div>
         )}
       </section>
