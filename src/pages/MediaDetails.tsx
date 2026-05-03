@@ -133,7 +133,12 @@ export default function MediaDetails() {
                 {item.externalUrl && (
                   <Button asChild size="sm" className="rounded-full gradient-hero text-white border-0">
                     <a href={item.externalUrl} target="_blank" rel="noreferrer">
-                      <ExternalLink className="w-4 h-4 mr-1" /> Open on Spotify
+                      <ExternalLink className="w-4 h-4 mr-1" />
+                      {item.type === "track" || item.type === "playlist"
+                        ? "Open on Spotify"
+                        : item.type === "book"
+                        ? "Open book"
+                        : "View details"}
                     </a>
                   </Button>
                 )}
