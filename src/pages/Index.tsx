@@ -7,16 +7,8 @@ import { getItems } from "@/lib/storage";
 import { MediaItem } from "@/types/media";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Sparkles, Plus, BookOpen, Film, Tv, Music, ListMusic } from "lucide-react";
+import { Sparkles, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const CATEGORIES: { type: MediaItem["type"]; label: string; icon: any }[] = [
-  { type: "book", label: "Books", icon: BookOpen },
-  { type: "movie", label: "Movies", icon: Film },
-  { type: "tv", label: "TV Shows", icon: Tv },
-  { type: "track", label: "Songs", icon: Music },
-  { type: "playlist", label: "Playlists", icon: ListMusic },
-];
 
 const Index = () => {
   const [items, setItems] = useState<MediaItem[]>([]);
