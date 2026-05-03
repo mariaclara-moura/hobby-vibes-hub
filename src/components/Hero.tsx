@@ -52,7 +52,7 @@ export function Hero() {
           <Button asChild size="lg" className="gradient-hero text-white border-0 hover:opacity-90 hover:scale-105 transition-all shadow-glow rounded-full px-8 h-12 text-base">
             <Link to="/add">
               <Sparkles className="w-4 h-4 mr-1" />
-              Add your first hobby
+              Add your new hobby experience
             </Link>
           </Button>
         </motion.div>
