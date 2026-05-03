@@ -78,6 +78,7 @@ export async function searchBooks(query: string): Promise<SearchResult[]> {
       categories: (b.subject || []).slice(0, 3),
       year: b.first_publish_year ? String(b.first_publish_year) : undefined,
       authors: b.author_name || [],
+      externalUrl: b.key ? `https://openlibrary.org${b.key}` : undefined,
     }));
   }
 }
