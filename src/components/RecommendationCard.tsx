@@ -21,7 +21,7 @@ export function RecommendationCard({ rec, index = 0 }: { rec: AIRecommendation; 
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.08 }}
       whileHover={{ y: -6 }}
-      className="group flex-shrink-0 w-[220px]"
+      className="group w-full sm:w-[220px] sm:flex-shrink-0"
     >
       <Wrapper {...wrapperProps} className="block">
         <div className="relative aspect-[2/3] overflow-hidden rounded-2xl shadow-card bg-muted">
