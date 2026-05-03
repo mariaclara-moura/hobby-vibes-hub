@@ -175,11 +175,11 @@ export default function MediaDetails() {
         </div>
 
         {loadingRecs ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
             {Array.from({ length: 12 }).map((_, i) => <PosterSkeleton key={i} />)}
           </div>
         ) : item.recommendations && item.recommendations.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
             {item.recommendations.map((r, i) => <RecommendationCard key={i} rec={r} index={i} />)}
           </div>
         ) : (
