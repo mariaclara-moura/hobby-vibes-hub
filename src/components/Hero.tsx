@@ -62,7 +62,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="flex items-center justify-center gap-3 mt-12 text-sm text-muted-foreground"
+          className="flex flex-wrap items-center justify-center gap-3 mt-12 text-sm text-muted-foreground"
         >
           {[
             { icon: BookOpen, label: "Books" },
