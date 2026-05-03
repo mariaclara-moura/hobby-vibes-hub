@@ -10,8 +10,8 @@ export function RecommendationCard({ rec, index = 0 }: { rec: AIRecommendation; 
   const Icon = typeIcon[rec.type];
   const isSpotify = rec.type === "track" || rec.type === "playlist";
   const externalUrl = rec.resolved.externalUrl;
-  const Wrapper: any = isSpotify && externalUrl ? "a" : "div";
-  const wrapperProps = isSpotify && externalUrl
+  const Wrapper: any = externalUrl ? "a" : "div";
+  const wrapperProps = externalUrl
     ? { href: externalUrl, target: "_blank", rel: "noreferrer" }
     : {};
 
