@@ -7,8 +7,16 @@ import { getItems } from "@/lib/storage";
 import { MediaItem } from "@/types/media";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Sparkles, Plus } from "lucide-react";
+import { Sparkles, Plus, BookOpen, Film, Tv, Music, ListMusic } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+const CATEGORIES: { type: MediaItem["type"]; label: string; icon: any }[] = [
+  { type: "book", label: "Books", icon: BookOpen },
+  { type: "movie", label: "Movies", icon: Film },
+  { type: "tv", label: "TV Shows", icon: Tv },
+  { type: "track", label: "Songs", icon: Music },
+  { type: "playlist", label: "Playlists", icon: ListMusic },
+];
 
 const Index = () => {
   const [items, setItems] = useState<MediaItem[]>([]);
@@ -56,10 +64,28 @@ const Index = () => {
             </Button>
           </motion.div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-            {items.map((item, i) => (
-              <MediaCard key={item.id} item={item} index={i} />
-            ))}
+          <div className="space-y-12">
+            {CATEGORIES.map((cat) => {
+              const catItems = items.filter((i) => i.type === cat.type);
+              if (catItems.length === 0) return null;
+              const Icon = cat.icon;
+              return (
+                <div key={cat.type}>
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Icon className="w-4 h-4 text-primary" />
+                    </div>
+                    <h3 className="font-serif text-xl font-semibold">{cat.label}</h3>
+                    <span className="text-sm text-muted-foreground">({catItems.length})</span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+                    {catItems.map((item, i) => (
+                      <MediaCard key={item.id} item={item} index={i} />
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </section>
@@ -80,7 +106,7 @@ const Index = () => {
             </h2>
             <p className="text-muted-foreground mb-8">Curated across books, film, TV and music — by feeling, not just genre.</p>
 
-            <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide -mx-6 px-6">
+            <div className="flex flex-col sm:flex-row gap-5 sm:overflow-x-auto pb-4 scrollbar-hide sm:-mx-6 sm:px-6">
               {latestWithRecs.recommendations!.map((rec, i) => (
                 <RecommendationCard key={i} rec={rec} index={i} />
               ))}

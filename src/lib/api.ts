@@ -26,6 +26,7 @@ export async function searchMovies(query: string): Promise<SearchResult[]> {
     imageUrl: m.poster_path ? `${TMDB_IMG}${m.poster_path}` : PLACEHOLDER,
     categories: [],
     year: m.release_date?.slice(0, 4),
+    externalUrl: `https://www.themoviedb.org/movie/${m.id}`,
   }));
 }
 
@@ -40,6 +41,7 @@ export async function searchTv(query: string): Promise<SearchResult[]> {
     imageUrl: m.poster_path ? `${TMDB_IMG}${m.poster_path}` : PLACEHOLDER,
     categories: [],
     year: m.first_air_date?.slice(0, 4),
+    externalUrl: `https://www.themoviedb.org/tv/${m.id}`,
   }));
 }
 
@@ -60,6 +62,7 @@ export async function searchBooks(query: string): Promise<SearchResult[]> {
         categories: v.categories || [],
         year: v.publishedDate?.slice(0, 4),
         authors: v.authors || [],
+        externalUrl: v.infoLink || v.previewLink || `https://books.google.com/books?id=${b.id}`,
       };
     });
   } catch {
@@ -75,6 +78,7 @@ export async function searchBooks(query: string): Promise<SearchResult[]> {
       categories: (b.subject || []).slice(0, 3),
       year: b.first_publish_year ? String(b.first_publish_year) : undefined,
       authors: b.author_name || [],
+      externalUrl: b.key ? `https://openlibrary.org${b.key}` : undefined,
     }));
   }
 }
