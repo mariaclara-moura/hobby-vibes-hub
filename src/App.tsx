@@ -21,6 +21,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/add" element={<AddMedia />} />
+          <Route path="/collection" element={<Collection />} />
           <Route path="/item/:id" element={<MediaDetails />} />
           
           <Route path="*" element={<NotFound />} />
