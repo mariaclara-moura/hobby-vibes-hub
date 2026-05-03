@@ -26,6 +26,7 @@ export async function searchMovies(query: string): Promise<SearchResult[]> {
     imageUrl: m.poster_path ? `${TMDB_IMG}${m.poster_path}` : PLACEHOLDER,
     categories: [],
     year: m.release_date?.slice(0, 4),
+    externalUrl: `https://www.themoviedb.org/movie/${m.id}`,
   }));
 }
 
@@ -40,6 +41,7 @@ export async function searchTv(query: string): Promise<SearchResult[]> {
     imageUrl: m.poster_path ? `${TMDB_IMG}${m.poster_path}` : PLACEHOLDER,
     categories: [],
     year: m.first_air_date?.slice(0, 4),
+    externalUrl: `https://www.themoviedb.org/tv/${m.id}`,
   }));
 }
 
